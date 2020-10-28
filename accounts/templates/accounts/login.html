@@ -1,0 +1,32 @@
+{% extends 'crowdfunding/index.html' %}
+
+    {% block content %}
+
+    {% if error %}
+
+    {{ error}}
+
+    {% endif %}
+    
+ 
+    <h1>Login</h1>
+
+    <form method = "POST" action = "{% url 'login' %}">
+    {% csrf_token %}
+        <div class="form-group col">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" name = "email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group col">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" name = "password" class="form-control" id="exampleInputPassword">
+            
+            </br>  
+
+            <button type="submit" class="btn btn-dark">Login</button>
+        </div>
+
+    </form>
+
+    {% endblock %}

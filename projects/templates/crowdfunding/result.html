@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <table border = "1">
+        {% for r in records %}
+            <tr>
+                <td>{{ r.0 }}</td> <!-- id -->
+                <td>{{ r.1 }}</td> <!-- im_id -->
+                <td>{{ r.2 }}</td> <!-- name -->
+                <td>{{ r.3 }}</td> <!-- price -->
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>

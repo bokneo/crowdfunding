@@ -1,0 +1,15 @@
+{% extends 'crowdfunding/index.html' %}
+
+    {% block content %}
+            <table border = "1">
+                {% for p in projects %}
+                    <tr>
+                        <td>{{ p.0 }}</td> <!-- id -->
+                        <td>{{ p.1 }}</td> <!-- im_id -->
+                        <td>{{ p.2 }}</td> <!-- name -->
+                        <td>{{ p.3 }}</td> <!-- price -->
+                    </tr>
+                {% endfor %}
+                </table>
+
+    {% endblock %}
