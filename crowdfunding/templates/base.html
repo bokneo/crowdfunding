@@ -65,6 +65,13 @@
         width: 1px;
       }
 
+      .carousel-img {
+
+        width: 750px;
+        height: 500px;
+
+      }
+
     </style>
 
   </head>
@@ -90,6 +97,10 @@
       <div class="form-inline my-2 my-lg-0">
         <div class="navbar-nav">
           <div class="nav-item active">
+            {% if user.is_superuser %}
+            <a class="nav-link nav-item" href="{% url 'create' %}">edit</a>  
+            {% else %}
+            {% endif %}
             {% if user.is_authenticated %}
             <a class="nav-link nav-item" href="{% url 'create' %}">Create</a>  
           </div>
@@ -111,47 +122,35 @@
       </div>
       </div>
     </nav>
-
     <div class = "container">
-      {% for p in projects %}
-      <img src="{{ p.image.url }}" class = "img-fluid"><img>  
-      
-      <table border = "1">
-          <tr>
-                <td>{{ p.name }}</td> <!-- id -->
-                <td>{{ p.description }}</td> <!-- im_id -->
-          </tr>
-        
-      {% endfor %}
-      </table>
-      {% block content %}
-      {% endblock %}
+    {% block content %}
+    {% endblock %}
     </div>
 
-    <footer class="text-muted">
-        <div class="container">
-            <p class = "text-center fixed-bottom">Support the FUN(D)</p>
-        </div>
-    </footer>
-    
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-    $( function() {
-      $( "#name" ).autocomplete({
-        source: "{% url 'autocomplete' %}",
-        open: function(){
-                    setTimeout(function () {
-                        $('.ui-autocomplete').css('z-index', 99);
-                    }, 0);
-                }
-      });
-    } );
-    </script>
-  </body>
+  <footer class="text-muted">
+      <div class="container">
+          <p class = "text-center fixed-bottom">Support the FUN(D)</p>
+      </div>
+  </footer>
+  
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#name" ).autocomplete({
+      source: "{% url 'autocomplete' %}",
+      open: function(){
+                  setTimeout(function () {
+                      $('.ui-autocomplete').css('z-index', 99);
+                  }, 0);
+              }
+    });
+  } );
+  </script>
+</body>
 </html>

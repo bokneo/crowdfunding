@@ -11,5 +11,9 @@
             </tr>
         {% endfor %}
         </table>
+        <h4>Number of search return: 
+            {% for value in count %}
+            {{ value.0 }}
+            {% endfor %}</h4>
     </body>
 </html>

@@ -7,7 +7,7 @@ from .models import Project
 # Create your views here.
 def index(request):
     project = Project.objects.all()
-    return render(request,'crowdfunding/index.html', {'projects': project})
+    return render(request,'projects/index.html', {'projects': project})
 
 def result(request):
     search_string = request.GET.get('name','')
@@ -15,8 +15,12 @@ def result(request):
     c = connection.cursor()
     c.execute(query)
     results = c.fetchall()
-    result_dict = {'records': results}
-    return render(request, 'crowdfunding/result.html', result_dict)
+    query = 'SELECT count(*) FROM projects_project WHERE name ~* \'%s\'' % (search_string)
+    c = connection.cursor()
+    c.execute(query)
+    count = c.fetchall()
+    result_dict = {'records': results, 'count': count}
+    return render(request, 'projects/result.html', result_dict)
 
 def autocomplete(request):
     if 'term' in request.GET:
@@ -33,7 +37,7 @@ def autocomplete(request):
         return data
     else:
         data = 'fail'
-    return render(data, 'crowdfunding/index.html')
+    return render(data, 'projects/index.html')
 
 @login_required(login_url="accounts/signup")
 
@@ -51,9 +55,9 @@ def create(request):
             return redirect('index')
 
         else:
-            return render(request, 'crowdfunding/create.html', {'error': "All fields are required"})  
+            return render(request, 'projects/create.html', {'error': "All fields are required"})  
     else:
-        return render(request, 'crowdfunding/create.html')
+        return render(request, 'projects/create.html')
 
 def detail(request):
     query = 'SELECT * FROM projects_project'
@@ -61,7 +65,7 @@ def detail(request):
     c.execute(query)
     project = c.fetchall()
     project_dict = {'projects': project}
-    return render(request, 'crowdfunding/detail.html', project_dict)
+    return render(request, 'projects/detail.html', project_dict)
 
 
 

@@ -11,13 +11,17 @@ from django.http import HttpResponse
 def signup(request):
     if request.method == 'POST':
         if request.POST['password1'] == request.POST['password2']:
-            try:
-                user = User.objects.get(username = request.POST['email'])
-                return render(request, 'accounts/signup.html', {'error':'Username has already been taken'})
-            except User.DoesNotExist:
-                user = User.objects.create_user(request.POST['email'], password = request.POST['password1'], first_name = request.POST['first_name'], last_name = request.POST['last_name'], email = request.POST['email'])
-                auth.login(request, user)
-                return redirect('index')
+                user = request.POST['email']
+                query = 'SELECT * FROM auth_user WHERE username = \'%s\'' % (user)
+                c = connection.cursor()
+                c.execute(query)
+                results = c.fetchall()
+                if len(results) > 0:
+                    return render(request, 'accounts/signup.html', {'error':'Username has already been taken'})
+                else:
+                    user = User.objects.create_user(request.POST['username'], password = request.POST['password1'], first_name = request.POST['first_name'], last_name = request.POST['last_name'], email = request.POST['email'])
+                    auth.login(request, user)
+                    return redirect('index')
         else:
             return render(request, 'accounts/signup.html', {'error':'Password does not match'})
     else:
@@ -25,7 +29,7 @@ def signup(request):
 
 def login(request):
     if request.method == "POST":
-        user = auth.authenticate(username = request.POST['email'], password = request.POST['password'])
+        user = auth.authenticate(username = request.POST['username'], password = request.POST['password'])
         if user is not None:
             auth.login(request, user)
             return redirect('index')
@@ -43,7 +47,7 @@ def signup(request):
     if request.method == 'POST':
         if request.POST['password1'] == request.POST['password2']:
                 user = request.POST['email']
-                query = 'SELECT * FROM users WHERE email = \'%s\'' % (user)
+                query = 'SELECT * FROM auth_user WHERE email = \'%s\'' % (user)
                 c = connection.cursor()
                 c.execute(query)
                 results = c.fetchall()
@@ -55,15 +59,15 @@ def signup(request):
                     lastName = request.POST['last_name']
                     user = request.POST['email']
                     password1 = request.POST['password1']
-                    query = """INSERT INTO users VALUES(\'%s\', \'%s\',\'%s\', \'%s\')""" % (firstName, lastName, password1, user)
+                    query = """INSERT INTO auth_user VALUES(\'%s\', \'%s\',\'%s\', \'%s\')""" % (firstName, lastName, password1, user)
                     c = connection.cursor()
                     c.execute(query)
+                    auth.login(request, user)
                     return redirect('index')
         else:
             return render(request, 'accounts/signup.html', {'error':'Password does not match'})
     else:
         return render(request, 'accounts/signup.html')
-
 
 def login(request):
     if request.method == "POST":

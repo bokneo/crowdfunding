@@ -22,7 +22,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('accounts/',include('accounts.urls')),
     path('result', views.result, name = 'result'),
-    path('', views.autocomplete, name = 'autocomplete'),
     path('create', views.create, name = "create"),
 ]
 
