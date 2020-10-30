@@ -20,10 +20,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('result', views.result, name = 'result'),
-    path('create', views.create, name = "create"),
-    path('invest', views.invest, name = "invest"),
-    path('<str:projectName>/', views.detail, name = "detail"),
-    path('', views.autocomplete, name = 'autocomplete'),
+    path('',views.adminPortal, name = "adminPortal"),
+    path('deleteuser',views.deluser, name = "deluser"),   
+    path('user',views.userPortal, name = "userPortal"),
+    path('project',views.projectPortal, name = "projectPortal"),
+    path('deleteproject',views.delproject, name = "delproject"),
+    path('<str:name>/project', views.editdetail, name = "editdetail"),
+    path('editproject',views.editproject, name = "editproject"),
 ]
-

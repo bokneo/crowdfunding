@@ -19,3 +19,8 @@ class Project(models.Model):
     image = models.ImageField(upload_to = 'images/')
     pledged = models.DecimalField(max_digits=12, decimal_places=2, blank=True, default=0)
     amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, default=0)
+
+class Invest(models.Model):
+    name = models.ForeignKey(Project, models.DO_NOTHING, db_column='name')
+    user = models.ForeignKey(User, models.DO_NOTHING, db_column='user')
+    amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, default=0)

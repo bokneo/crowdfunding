@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <form action = "{% url 'userPortal' %}">
+          <input type =submit value = "Users"></input>
+        </form>
+        
+        <form action = "{% url 'projectPortal' %}">
+            <input type =submit value = "Projects"></input>
+          </form>
+    {% endblock %}

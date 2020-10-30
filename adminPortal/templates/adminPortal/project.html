@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <table border = "1">
+        {% for r in records %}
+            <tr>
+                <td>{{ r.0 }}</td> <!-- id -->
+                <td>{{ r.1 }}</td> <!-- im_id -->
+                <td>{{ r.2 }}</td> <!-- name -->
+                <td>{{ r.3 }}</td> <!-- price -->
+                <td>{{ r.4 }}</td> <!-- name -->
+                <td>{{ r.5 }}</td> <!-- price -->
+                <td>{{ r.6 }}</td> <!-- price -->
+                <td>{{ r.7 }}</td> <!-- price -->
+                <td>
+                    <form id = "delete" method = "POST" action = "{% url 'delproject' %}">
+                      {% csrf_token %}
+                      <input type = "hidden" name = "deleteid" id = "deleteid" value = "{{ r.0 }}"></input>
+                      <input type =submit value = "Delete"></input>
+                    </form>
+                </td>
+                <td>
+                    <form id = "edit" method = "POST" action = "{% url 'editdetail' r.0 %}">
+                    {% csrf_token %}
+                      <input type = "hidden" name = "editid" id = "editid" value = "{{ r.0 }}"></input>
+                      <input type =submit value = "Edit"></input>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endblock %}
