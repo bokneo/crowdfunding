@@ -10,20 +10,23 @@ from django.http import HttpResponse
 
 def signup(request):
     if request.method == 'POST':
-        if request.POST['password1'] == request.POST['password2']:
-                user = request.POST['email']
-                query = 'SELECT * FROM auth_user WHERE username = \'%s\'' % (user)
-                c = connection.cursor()
-                c.execute(query)
-                results = c.fetchall()
-                if len(results) > 0:
-                    return render(request, 'accounts/signup.html', {'error':'Username has already been taken'})
-                else:
-                    user = User.objects.create_user(request.POST['username'], password = request.POST['password1'], first_name = request.POST['first_name'], last_name = request.POST['last_name'], email = request.POST['email'])
-                    auth.login(request, user)
-                    return redirect('index')
+        if request.POST['username'] and request.POST['password1'] and request.POST['first_name'] and request.POST['last_name'] and request.POST['email']:
+            if request.POST['password1'] == request.POST['password2']:
+                    user = request.POST['username']
+                    query = 'SELECT * FROM auth_user WHERE username = \'%s\'' % (user)
+                    c = connection.cursor()
+                    c.execute(query)
+                    results = c.fetchall()
+                    if len(results) > 0:
+                        return render(request, 'accounts/signup.html', {'error':'Username has already been taken'})
+                    else:
+                        user = User.objects.create_user(request.POST['username'], password = request.POST['password1'], first_name = request.POST['first_name'], last_name = request.POST['last_name'], email = request.POST['email'])
+                        auth.login(request, user)
+                        return redirect('index')
+            else:
+                return render(request, 'accounts/signup.html', {'error':'Password does not match'})
         else:
-            return render(request, 'accounts/signup.html', {'error':'Password does not match'})
+            return render(request, 'accounts/signup.html', {'error':'All fields is required'})
     else:
         return render(request, 'accounts/signup.html')
 

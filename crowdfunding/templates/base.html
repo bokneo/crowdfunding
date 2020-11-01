@@ -78,6 +78,13 @@
 
       }
 
+      .card-img {
+
+        width: 350px;
+        height: 275px;
+
+      }
+
     </style>
 
   </head>
@@ -103,7 +110,7 @@
         <div class="navbar-nav">
           <div class="nav-item active">
             {% if user.is_superuser %}
-            <a class="nav-link nav-item" href="{% url 'adminPortal' %}">Admin Portal</a>  
+            <a class="nav-link nav-item" href="{% url 'adminPortal' %}">Admin</a>  
             {% endif %}
           </div>
           <div class="nav-item active">
@@ -135,7 +142,7 @@
 
   <footer class="text-muted">
       <div class="container">
-          <p class = "text-center fixed-bottom">Support the FUN(D)</p>
+          <p class = "text-center fixed">Support the FUN(D)</p>
       </div>
   </footer>
   
@@ -157,6 +164,9 @@
               }
     });
   } );
+  $('.Button').click(function() {
+    $(this).toggleClass("active");
+});
   </script>
 </body>
 </html>

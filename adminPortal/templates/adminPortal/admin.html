@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
     {% block content %}
-        <form action = "{% url 'userPortal' %}">
-          <input type =submit value = "Users"></input>
+
+      <div class="btn-group mt-5 mb-5" role="group" aria-label="Basic example">
+        <form action = "{% url 'userPortal' %}">  
+          <button type="submit" class="btn btn-secondary">Users</button>
         </form>
-        
         <form action = "{% url 'projectPortal' %}">
-            <input type =submit value = "Projects"></input>
-          </form>
+          <button type="submit" class="btn btn-secondary">Projects</button>
+        </form>
+      </div>
     {% endblock %}

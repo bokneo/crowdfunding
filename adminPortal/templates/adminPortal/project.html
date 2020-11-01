@@ -1,32 +1,48 @@
 {% extends 'base.html' %}
 
     {% block content %}
-        <table border = "1">
-        {% for r in records %}
-            <tr>
-                <td>{{ r.0 }}</td> <!-- id -->
-                <td>{{ r.1 }}</td> <!-- im_id -->
-                <td>{{ r.2 }}</td> <!-- name -->
-                <td>{{ r.3 }}</td> <!-- price -->
-                <td>{{ r.4 }}</td> <!-- name -->
-                <td>{{ r.5 }}</td> <!-- price -->
-                <td>{{ r.6 }}</td> <!-- price -->
-                <td>{{ r.7 }}</td> <!-- price -->
-                <td>
-                    <form id = "delete" method = "POST" action = "{% url 'delproject' %}">
-                      {% csrf_token %}
-                      <input type = "hidden" name = "deleteid" id = "deleteid" value = "{{ r.0 }}"></input>
-                      <input type =submit value = "Delete"></input>
-                    </form>
-                </td>
-                <td>
-                    <form id = "edit" method = "POST" action = "{% url 'editdetail' r.0 %}">
-                    {% csrf_token %}
-                      <input type = "hidden" name = "editid" id = "editid" value = "{{ r.0 }}"></input>
-                      <input type =submit value = "Edit"></input>
-                    </form>
-                </td>
-            </tr>
+        <div class="btn-group mt-5 mb-5" role="group" aria-label="Basic example">
+            <form action = "{% url 'userPortal' %}">  
+            <button type="submit" class="btn btn-secondary">Users</button>
+            </form>
+            <form action = "{% url 'projectPortal' %}">
+            <button type="submit" class="btn btn-secondary">Projects</button>
+            </form>
+        </div>
+
+        {% for p in records %}
+        <div class="card mb-2">
+            <div class="row no-gutters">
+              <div class="col-md-4">
+                <img src="/media/{{ p.4 }}" class="card-img mt-3 mb-3 ml-1">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ p.0 }}</h5>
+                    <p class="card-text">{{ p.1}}</p>
+                    {% if p.5 >= p.6 %}
+                    <h6 class="card-text">Funding Status: Funded</h6>
+                    {% else %}
+                    <h6 class="card-text">Funding Status: Not Funded</h6>
+                    {% endif %}
+                    <h6 class="card-text">Amount Targeted: {{ p.6}}</h6>
+                    <h6 class="card-text">Amount Plegded: {{ p.5}}</h6>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <form id = "delete" method = "POST" action = "{% url 'delproject' %}">
+                        {% csrf_token %}
+                        <input type = "hidden" name = "deleteid" id = "deleteid" value = "{{ p.0 }}"></input>
+                        <input class="btn btn-secondary" type =submit value = "Delete"></input>
+                        </form>
+                        <form id = "edit" method = "POST" action = "{% url 'editdetail' p.0 %}">
+                        {% csrf_token %}
+                        <input type = "hidden" name = "editid" id = "editid" value = "{{ p.0 }}"></input>
+                        <input class="btn btn-secondary" type =submit value = "Edit"></input>
+                        </form>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
         {% endfor %}
-        </table>
     {% endblock %}

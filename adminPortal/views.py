@@ -18,7 +18,11 @@ def userPortal(request):
     c = connection.cursor()
     c.execute(query)
     users = c.fetchall()
-    user_dict = {'records': users}
+    query = '''SELECT * FROM auth_user AS a WHERE NOT a.is_superuser AND EXISTS (SELECT * FROM projects_project AS p WHERE p.id = a.id)'''
+    c = connection.cursor()
+    c.execute(query)
+    users_withProj = c.fetchall()
+    user_dict = {'records': users, 'withproj': users_withProj}
     return render(request, 'adminPortal/user.html', user_dict)
 
 def deluser(request):
@@ -60,12 +64,21 @@ def editdetail(request, name):
 def editproject(request):
     if request.method == "POST":
         editname = request.POST.get('editname', None)
-        description = request.POST.get('description', None)
-        image = request.FILES['image']
-        project = Project.objects.get(pk = editname)
-        project.image = request.FILES['image']
-        project.save()
-        query = "UPDATE projects_project SET description = \'%s\', image = \'images/%s\' WHERE name = \'%s\'" % (description, image, editname)
+        description = request.POST['description']
+        cat = request.POST.get('category', None)
+        if request.FILES:
+            image = request.FILES['image']
+            project = Project.objects.get(pk = editname)
+            project.image = request.FILES['image']
+            project.description = description
+            project.save()
+            query = '''UPDATE projects_project SET image = \'images/%s\', category = \'%s\' WHERE name = \'%s\'''' % (image, cat, editname)
+        else:
+            project = Project.objects.get(pk = editname)
+            project.description = description
+            project.save()
+            query = '''UPDATE projects_project SET category = \'%s\' WHERE name = \'%s\'''' % (cat, editname)
+            
         c = connection.cursor()
         c.execute(query)
         return redirect('projectPortal')

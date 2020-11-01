@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
     {% block content %}
+                {% if error %}
+
+                <div class="alert alert-danger mt-3" role="alert">
+                    {{ error}}
+                </div>
+                {% else %}
+                <div class="alert alert-success mt-3" role="alert">
+                  You have sucessfully invested in the project!
+                </div>
+                {% endif %}
                 {% for p in projects %}
                 <div class="card mb-2">
                     <div class="row no-gutters">

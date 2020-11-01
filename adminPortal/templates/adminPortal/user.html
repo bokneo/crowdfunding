@@ -1,23 +1,82 @@
 {% extends 'base.html' %}
 
     {% block content %}
-        <table border = "1">
-        {% for r in records %}
-            <tr>
-                <td>{{ r.0 }}</td> <!-- id -->
-                <td>{{ r.4 }}</td> <!-- im_id -->
-                <td>{{ r.7 }}</td> <!-- name -->
-                <td>{{ r.5 }}</td> <!-- price -->
-                <td>{{ r.6 }}</td> <!-- name -->
-                <td>{{ r.2 }}</td> <!-- price -->
-                <td>
-                    <form id = "delete" method = "POST" action = "{% url 'deluser' %}">
-                      {% csrf_token %}
-                      <input type = "hidden" name = "deleteid" id = "deleteid" value = "{{ r.0 }}"></input>
-                      <input type =submit value = "Delete"></input>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
+        <div class="btn-group mt-5 mb-5" role="group" aria-label="Basic example">
+            <form action = "{% url 'userPortal' %}">  
+            <button type="submit" class="btn btn-secondary">Users</button>
+            </form>
+            <form action = "{% url 'projectPortal' %}">
+            <button type="submit" class="btn btn-secondary">Projects</button>
+            </form>
+        </div>
+        <div>
+            <h1>User Without Projects</h1>
+            <table class="table table-borderless table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#id</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for r in records %}
+                <tr>
+                    <td>{{ r.0 }}</td> <!-- id -->
+                    <td>{{ r.4 }}</td> <!-- im_id -->
+                    <td>{{ r.7 }}</td> <!-- name -->
+                    <td>{{ r.5 }}</td> <!-- price -->
+                    <td>{{ r.6 }}</td> <!-- name -->
+                    <td>{{ r.2 }}</td> <!-- price -->
+                    <td>
+                        <form id = "delete" method = "POST" action = "{% url 'deluser' %}">
+                        {% csrf_token %}
+                        <input type = "hidden" name = "deleteid" id = "deleteid" value = "{{ r.0 }}"></input>
+                        <input type =submit value = "Delete"></input>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h1>User With Projects</h1>
+            <table class="table table-borderless table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#id</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                {% for r in withproj %}
+                <tr>
+                    <td>{{ r.0 }}</td> <!-- id -->
+                    <td>{{ r.4 }}</td> <!-- im_id -->
+                    <td>{{ r.7 }}</td> <!-- name -->
+                    <td>{{ r.5 }}</td> <!-- price -->
+                    <td>{{ r.6 }}</td> <!-- name -->
+                    <td>{{ r.2 }}</td> <!-- price -->
+                    <td>
+                        <form id = "delete" method = "POST" action = "{% url 'deluser' %}">
+                        {% csrf_token %}
+                        <input type = "hidden" name = "deleteid" id = "deleteid" value = "{{ r.0 }}"></input>
+                        <input type =submit value = "Delete"></input>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        
     {% endblock %}
