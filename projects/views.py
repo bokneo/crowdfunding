@@ -22,10 +22,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
         project = paginator.page(paginator.num_pages)
     return render(request,'projects/index.html', {'projects': project})'''
 
+
 def index(request):
-    cat = request.GET.get('cat','')
+    cat = request.GET.get('cat', '')
     if request.GET:
-        cat = request.GET.get('cat','')
+        cat = request.GET.get('cat', '')
     else:
         cat = "all"
     if cat == "all":
@@ -46,6 +47,37 @@ def index(request):
         c.execute(query)
         project = c.fetchall()
         #project_dict = {'projects': project}
+    query = """SELECT *
+                FROM projects_project AS pp
+                WHERE pp.name = (
+                    SELECT pi.name
+                    FROM projects_invest AS pi
+                    WHERE EXTRACT(DAY FROM ts)=EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+                    AND EXTRACT(MONTH FROM ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+                    GROUP BY pi.name, pi.amount
+                    HAVING SUM(pi.amount) >= ALL(
+                        SELECT SUM(pi.amount)
+                        FROM projects_invest AS pi
+                        WHERE EXTRACT(DAY FROM ts)=EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+                        AND EXTRACT(MONTH FROM ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+                        GROUP BY pi.name, pi.amount
+                    )
+                ) """
+    c = connection.cursor()
+    c.execute(query)
+    feature = c.fetchall()
+    query = """SELECT *
+                FROM projects_project AS pp, projects_invest AS pi
+                WHERE pi.name = pp.name
+                AND NOT EXISTS(
+                        SELECT *
+                        FROM projects_invest AS pi1
+                        WHERE pi.ts < pi1.ts
+                        
+                )"""
+    c = connection.cursor()
+    c.execute(query)
+    newest = c.fetchall()
     page = request.GET.get('page', 1)
     paginator = Paginator(project, 2)
     try:
@@ -54,25 +86,54 @@ def index(request):
         project = paginator.page(1)
     except EmptyPage:
         project = paginator.page(paginator.num_pages)
-    return render(request,'projects/index.html', {'projects': project, 'cat': cat})
+    return render(request, 'projects/index.html', {'projects': project, 'cat': cat, 'feature': feature, 'newest': newest})
+
+
+'''def feature(request):
+    query = """SELECT *
+                FROM projects_project AS pp
+                WHERE pp.name = (
+                    SELECT pi.name
+                    FROM projects_invest AS pi
+                    WHERE EXTRACT(DAY FROM ts)=EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+                    AND EXTRACT(MONTH FROM ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+                    GROUP BY pi.name, pi.amount
+                    HAVING SUM(pi.amount) >= ALL(
+                        SELECT SUM(pi.amount)
+                        FROM projects_invest AS pi
+                        WHERE EXTRACT(DAY FROM ts)=EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+                        AND EXTRACT(MONTH FROM ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+                        GROUP BY pi.name, pi.amount
+                    )
+                ) """
+    c = connection.cursor()
+    c.execute(query)
+    project = c.fetchall()
+    #project_dict = {'projects': project}
+    return render(request, 'projects/index.html', {'projects': project, 'cat': cat})'''
+
 
 def result(request):
-    search_string = request.GET.get('name','')
-    query = 'SELECT * FROM projects_project WHERE name ~* \'%s\' OR category ~* \'%s\'' % (search_string, search_string)
+    search_string = request.GET.get('name', '')
+    query = 'SELECT * FROM projects_project WHERE name ~* \'%s\' OR category ~* \'%s\'' % (
+        search_string, search_string)
     c = connection.cursor()
     c.execute(query)
     results = c.fetchall()
-    query = 'SELECT count(*) FROM projects_project WHERE name ~* \'%s\' OR category ~* \'%s\'' % (search_string, search_string)
+    query = 'SELECT count(*) FROM projects_project WHERE name ~* \'%s\' OR category ~* \'%s\'' % (
+        search_string, search_string)
     c = connection.cursor()
     c.execute(query)
     count = c.fetchall()
     result_dict = {'records': results, 'count': count}
     return render(request, 'projects/result.html', result_dict)
 
+
 def autocomplete(request):
     if 'term' in request.GET:
-        search_string = request.GET.get('term','')
-        query = 'SELECT * FROM projects_project WHERE (name ~* \'%s\' OR category ~* \'%s\')' % (search_string, search_string)
+        search_string = request.GET.get('term', '')
+        query = 'SELECT * FROM projects_project WHERE (name ~* \'%s\' OR category ~* \'%s\')' % (
+            search_string, search_string)
         c = connection.cursor()
         c.execute(query)
         results = c.fetchall()
@@ -86,11 +147,11 @@ def autocomplete(request):
         data = 'fail'
     return render(data, 'projects/index.html')
 
-@login_required(login_url="accounts/signup")
 
+@login_required(login_url="accounts/signup")
 def create(request):
     if request.method == 'POST':
-        if request.POST['title'] and request.POST['body'] and request.FILES['image']:
+        if request.POST['title'] and request.POST['body'] and request.FILES.get('filepath', False) and request.POST['start'] and request.POST['end'] and request.POST['amount'] and request.POST['category']:
             project = Project()
             project.name = request.POST['title']
             project.description = request.POST['body']
@@ -104,42 +165,57 @@ def create(request):
             return redirect('index')
 
         else:
-            return render(request, 'projects/create.html', {'error': "All fields are required"})  
+            return render(request, 'projects/create.html', {'error': "All fields are required"})
     else:
         return render(request, 'projects/create.html')
 
+
 def detail(request, projectName):
-    query = "SELECT * FROM projects_project WHERE name = \'%s\'" % (projectName)
+    query = "SELECT * FROM projects_project WHERE name = \'%s\'" % (
+        projectName)
     c = connection.cursor()
     c.execute(query)
     project = c.fetchall()
     project_dict = {'projects': project}
     return render(request, 'projects/detail.html', project_dict)
 
+
 def invest(request):
     project_name = request.POST.get('projectName', '')
     amount = request.POST.get('amount', '')
     username = request.user.id
-    if int(amount) > 0:
-        query = """INSERT INTO projects_invest (amount, name, "user", ts) VALUES (\'%s\', \'%s\', \'%s\', CURRENT_TIMESTAMP)""" % (amount, project_name, username)
-        c = connection.cursor()
-        c.execute(query)
-        query = "UPDATE projects_project SET pledged = (SELECT SUM(amount) FROM projects_invest WHERE name = \'%s\') WHERE name = \'%s\'" % (project_name, project_name)
-        c = connection.cursor()
-        c.execute(query)
-        query = "SELECT * FROM projects_project WHERE name = \'%s\'" % (project_name)
-        c = connection.cursor()
-        c.execute(query)
-        project = c.fetchall()
-        project_dict = {'projects': project}
-        return render(request, 'projects/invest.html', project_dict)
+    if amount is not None and amount != '':
+        if (int(amount) > 0):
+            query = """INSERT INTO projects_invest (amount, name, "user", ts) VALUES (\'%s\', \'%s\', \'%s\', CURRENT_TIMESTAMP)""" % (
+                amount, project_name, username)
+            c = connection.cursor()
+            c.execute(query)
+            query = "UPDATE projects_project SET pledged = (SELECT SUM(amount) FROM projects_invest WHERE name = \'%s\') WHERE name = \'%s\'" % (
+                project_name, project_name)
+            c = connection.cursor()
+            c.execute(query)
+            query = "SELECT * FROM projects_project WHERE name = \'%s\'" % (
+                project_name)
+            c = connection.cursor()
+            c.execute(query)
+            project = c.fetchall()
+            project_dict = {'projects': project}
+            return render(request, 'projects/invest.html', project_dict)
+        else:
+            query = "SELECT * FROM projects_project WHERE name = \'%s\'" % (
+                project_name)
+            c = connection.cursor()
+            c.execute(query)
+            project = c.fetchall()
+            project_dict = {'projects': project,
+                            'error': 'Please key in the correct amount'}
+            return render(request, 'projects/invest.html', project_dict)
     else:
-        query = "SELECT * FROM projects_project WHERE name = \'%s\'" % (project_name)
+        query = "SELECT * FROM projects_project WHERE name = \'%s\'" % (
+            project_name)
         c = connection.cursor()
         c.execute(query)
         project = c.fetchall()
-        project_dict = {'projects': project, 'error': 'Please key in the correct amount'}
+        project_dict = {'projects': project,
+                        'error': 'Please key in the correct amount'}
         return render(request, 'projects/invest.html', project_dict)
-
-
-

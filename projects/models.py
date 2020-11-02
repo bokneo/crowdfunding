@@ -23,6 +23,7 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     category = models.CharField(max_length=255, default="other")
 
+
 class Invest(models.Model):
     name = models.ForeignKey(Project, on_delete=models.CASCADE, db_column='name')
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user')

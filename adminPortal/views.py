@@ -28,7 +28,6 @@ def userPortal(request):
 def deluser(request):
     if request.method == "POST":
         deleteId = request.POST.get('deleteid', None)
-        print(deleteId)
         query = 'DELETE FROM auth_user WHERE id = \'%s\'' % (deleteId)
         c = connection.cursor()
         c.execute(query)
@@ -40,7 +39,6 @@ def projectPortal(request):
     c.execute(query)
     projects = c.fetchall()
     project_dict = {'records': projects}
-    print(project_dict)
     return render(request, 'adminPortal/project.html', project_dict)
 
 def delproject(request):

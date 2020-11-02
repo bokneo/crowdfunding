@@ -1,172 +1,181 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    {% load static %}
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<head>
+  {% load static %}
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>JOIN THE FUN(D)</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <style type = "text/css">
-    
-      .ui-autocomplete {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        display: none;
-        float: left;
-        min-width: 160px;
-        padding: 5px 0;
-        margin: 2px 0 0;
-        list-style: none;
-        font-size: 14px;
-        text-align: left;
-        background-color: #ffffff;
-        border: 1px solid #cccccc;
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        border-radius: 4px;
-        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-        background-clip: padding-box;
-      }
+  <title>JOIN THE FUN(D)</title>
 
-      .ui-autocomplete > li > div {
-        display: block;
-        padding: 3px 20px;
-        clear: both;
-        font-weight: normal;
-        line-height: 1.42857143;
-        color: #333333;
-        white-space: nowrap;
-      }
+  <style type="text/css">
+    .ui-autocomplete {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 1000;
+      display: none;
+      float: left;
+      min-width: 160px;
+      padding: 5px 0;
+      margin: 2px 0 0;
+      list-style: none;
+      font-size: 14px;
+      text-align: left;
+      background-color: #ffffff;
+      border: 1px solid #cccccc;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+      -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      background-clip: padding-box;
+    }
 
-      .ui-state-hover,
-      .ui-state-active,
-      .ui-state-focus {
-        text-decoration: none;
-        color: #262626;
-        background-color: #f5f5f5;
-        cursor: pointer;
-      }
+    .ui-autocomplete>li>div {
+      display: block;
+      padding: 3px 20px;
+      clear: both;
+      font-weight: normal;
+      line-height: 1.42857143;
+      color: #333333;
+      white-space: nowrap;
+    }
 
-      .ui-helper-hidden-accessible {
-        border: 0;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-      }
+    .ui-state-hover,
+    .ui-state-active,
+    .ui-state-focus {
+      text-decoration: none;
+      color: #262626;
+      background-color: #f5f5f5;
+      cursor: pointer;
+    }
 
-      .carousel-img {
+    .ui-helper-hidden-accessible {
+      border: 0;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
 
-        width: 750px;
-        height: 500px;
+    .carousel-img {
 
-      }
+      width: 750px;
+      height: 500px;
 
-      .nav-link:hover {
+    }
 
-        font-family:monospace;
+    .nav-link:hover {
 
-      }
+      font-family: monospace;
 
-      .card-img {
+    }
 
-        width: 350px;
-        height: 275px;
+    .card-img {
 
-      }
+      max-width: 300px ;
+      max-height: 275px;
 
-    </style>
+    }
+  </style>
 
-  </head>
-  <body>
+</head>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'index' %}">
-        <img src="{% static 'logo.png' %}" class = "d-inline-block align-baseline"/>
-        FUN(D)GIVING
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class="navbar-nav mr-auto">
-            <form class="form-inline my-2 my-lg-0" action = "{% url 'result' %}" method = "GET">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" name = "name" id = "name"></input>
-              <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'index' %}">
+      <img src="{% static 'logo.png' %}" class="d-inline-block align-baseline" />
+      FUN(D)GIVING
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="navbar-nav mr-auto">
+        <form class="form-inline my-2 my-lg-0" action="{% url 'result' %}" method="GET">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" name="name" id="name"></input>
+          <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
       <div class="form-inline my-2 my-lg-0">
         <div class="navbar-nav">
           <div class="nav-item active">
             {% if user.is_superuser %}
-            <a class="nav-link nav-item" href="{% url 'adminPortal' %}">Admin</a>  
+            <a class="nav-link nav-item" href="{% url 'adminPortal' %}">Admin</a>
             {% endif %}
           </div>
           <div class="nav-item active">
             {% if user.is_authenticated %}
-            <a class="nav-link nav-item" href="{% url 'create' %}">Create</a>  
+            <a class="nav-link nav-item" href="{% url 'create' %}">Create</a>
           </div>
           <div class="nav-item active">
             <a class="nav-link nav-item" href="javascript:{document.getElementById('logout').submit()}">Logout</a>
-            <form id = "logout" method = "POST" action = "{% url 'logout' %}">
+            <form id="logout" method="POST" action="{% url 'logout' %}">
               {% csrf_token %}
-              <input type = "hidden" />
+              <input type="hidden" />
             </form>
           </div>
-            {% else %}
-            <a class="nav-link" href="{% url 'login' %}">Log In</a>
-          </div>
-          <div class="nav-item active">
-            <a class="nav-link"href="{% url 'signup' %}">Sign Up</a>
-          </div>
-          {% endif %}
+          {% else %}
+          <a class="nav-link" href="{% url 'login' %}">Log In</a>
         </div>
+        <div class="nav-item active">
+          <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+        </div>
+        {% endif %}
       </div>
-      </div>
-    </nav>
-    <div class = "container">
+    </div>
+    </div>
+  </nav>
+  <div class="container">
     {% block content %}
     {% endblock %}
-    </div>
+  </div>
 
   <footer class="text-muted">
-      <div class="container">
-          <p class = "text-center fixed">Support the FUN(D)</p>
-      </div>
+    <div class="container">
+      <p class="text-center fixed">Support the FUN(D)</p>
+    </div>
   </footer>
-  
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+    crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
-  $( function() {
-    $( "#name" ).autocomplete({
-      source: "{% url 'autocomplete' %}",
-      open: function(){
-                  setTimeout(function () {
-                      $('.ui-autocomplete').css('z-index', 99);
-                  }, 0);
-              }
+    $(function () {
+      $("#name").autocomplete({
+        source: "{% url 'autocomplete' %}",
+        open: function () {
+          setTimeout(function () {
+            $('.ui-autocomplete').css('z-index', 99);
+          }, 0);
+        }
+      });
     });
-  } );
-  $('.Button').click(function() {
-    $(this).toggleClass("active");
-});
+    $('.Button').click(function () {
+      $(this).toggleClass("active");
+    });
   </script>
 </body>
+
 </html>

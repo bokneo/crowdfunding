@@ -1,48 +1,48 @@
 {% extends 'projects/index.html' %}
 
-    {% block content %}
-    
-    {% if error %}
+{% block content %}
 
-    <div class="alert alert-danger mt-3" role="alert">
-        {{ error}}
+{% if error %}
+
+<div class="alert alert-danger mt-3" role="alert">
+    {{ error}}
+</div>
+
+{% endif %}
+
+<h1>Sign up</h1>
+
+<form method="POST" action="{% url 'signup' %}">
+    {% csrf_token %}
+    <div class="form-group col">
+        <label for="exampleInputEmail1">First Name</label>
+        <input type="text" name="first_name" class="form-control">
+    </div>
+    <div class="form-group col">
+        <label for="exampleInputEmail1">Last Name</label>
+        <input type="text" name="last_name" class="form-control">
+    </div>
+    <div class="form-group col">
+        <label for="exampleInputEmail1">Username</label>
+        <input type="text" name="username" class="form-control" id="exampleInputUsername" aria-describedby="emailHelp">
+    </div>
+    <div class="form-group col">
+        <label for="exampleInputEmail1">Email Address</label>
+        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>
+    <div class="form-group col">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" name="password1" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="form-group col">
+        <label for="exampleInputPassword1">Confirm Password</label>
+        <input type="password" name="password2" class="form-control" id="exampleInputPassword1">
+        </br>
+        <button type="submit" class="btn btn-dark">Sign up</button>
     </div>
 
-    {% endif %}
-    
-    <h1>Sign up</h1>
+</form>
 
-    <form method = "POST" action = "{% url 'signup' %}">
-    {% csrf_token %}
-        <div class="form-group col">
-            <label for="exampleInputEmail1">First Name</label>
-            <input type="text" name = "first_name" class="form-control" >
-         </div>
-         <div class="form-group col">
-            <label for="exampleInputEmail1">Last Name</label>
-            <input type="text" name = "last_name" class="form-control" >
-        </div>
-        <div class="form-group col">
-            <label for="exampleInputEmail1">Username</label>
-            <input type="text" name = "username" class="form-control" id="exampleInputUsername" aria-describedby="emailHelp">
-        </div>
-        <div class="form-group col">
-            <label for="exampleInputEmail1">Email Address</label>
-            <input type="email" name = "email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        <div class="form-group col">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" name = "password1" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="form-group col">
-            <label for="exampleInputPassword1">Confirm Password</label>
-            <input type="password" name = "password2" class="form-control" id="exampleInputPassword1">
-            </br>
-            <button type="submit" class="btn btn-dark">Sign up</button>
-        </div>
 
-    </form>
-
-    
-    {% endblock %}
+{% endblock %}
