@@ -26,5 +26,7 @@ urlpatterns = [
     path('project',views.projectPortal, name = "projectPortal"),
     path('deleteproject',views.delproject, name = "delproject"),
     path('<str:name>/project', views.editdetail, name = "editdetail"),
+    path('userdetail', views.userdetail, name = "userdetail"),
     path('editproject',views.editproject, name = "editproject"),
+    path('edituser',views.edituser, name = "edituser"),
 ]

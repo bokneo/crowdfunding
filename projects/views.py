@@ -42,27 +42,31 @@ def index(request):
         project = c.fetchall()
         #project_dict = {'projects': project}
     else:
-        query = "SELECT * FROM projects_project WHERE category = \'%s\' ORDER BY created_at DESC" % (cat)
+        query = "SELECT * FROM projects_project WHERE category = \'%s\' ORDER BY created_at DESC" % (
+            cat)
         c = connection.cursor()
         c.execute(query)
         project = c.fetchall()
         #project_dict = {'projects': project}
     query = """SELECT *
-                FROM projects_project AS pp
-                WHERE pp.name = (
-                    SELECT pi.name
-                    FROM projects_invest AS pi
-                    WHERE EXTRACT(DAY FROM ts)=EXTRACT(DAY FROM CURRENT_TIMESTAMP)
-                    AND EXTRACT(MONTH FROM ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
-                    GROUP BY pi.name, pi.amount
-                    HAVING SUM(pi.amount) >= ALL(
-                        SELECT SUM(pi.amount)
-                        FROM projects_invest AS pi
-                        WHERE EXTRACT(DAY FROM ts)=EXTRACT(DAY FROM CURRENT_TIMESTAMP)
-                        AND EXTRACT(MONTH FROM ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
-                        GROUP BY pi.name, pi.amount
-                    )
-                ) """
+		        FROM projects_project AS pp
+		        WHERE pp.name = (
+		            SELECT pi.name
+		            FROM projects_invest AS pi
+		            WHERE EXTRACT(DAY FROM pi.ts) BETWEEN EXTRACT(DAY FROM CURRENT_TIMESTAMP) - 6 AND EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+		            AND EXTRACT(MONTH FROM pi.ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+			        AND EXTRACT(YEAR FROM pi.ts)=EXTRACT(YEAR FROM CURRENT_TIMESTAMP)
+		            GROUP BY pi.name, pi.amount
+		            HAVING SUM(pi.amount) >= ALL(
+		                SELECT SUM(pi.amount)
+		                FROM projects_invest AS pi
+		                WHERE EXTRACT(DAY FROM ts)=EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+		                AND EXTRACT(MONTH FROM ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+		                GROUP BY pi.name, pi.amount
+		            )
+				LIMIT 1
+		        )
+			"""
     c = connection.cursor()
     c.execute(query)
     feature = c.fetchall()
@@ -140,7 +144,7 @@ def autocomplete(request):
         result_dict = {'records': results}
         titles = []
         for projects in result_dict['records']:
-            titles.append(projects[0])
+            titles.append(projects[0])          
         data = JsonResponse(titles, safe=False)
         return data
     else:
@@ -151,7 +155,7 @@ def autocomplete(request):
 @login_required(login_url="accounts/signup")
 def create(request):
     if request.method == 'POST':
-        if request.POST['title'] and request.POST['body'] and request.FILES.get('filepath', False) and request.POST['start'] and request.POST['end'] and request.POST['amount'] and request.POST['category']:
+        if request.POST['title'] and request.POST['body'] and request.FILES.get('image', False) and request.POST['start'] and request.POST['end'] and request.POST['amount'] and request.POST['category']:
             project = Project()
             project.name = request.POST['title']
             project.description = request.POST['body']

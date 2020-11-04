@@ -34,7 +34,7 @@
   <div class="col-sm-6">
     {% for p in feature %}
     <div class="card">
-      <h5 class="card-header lead">Highest Fund Sought of The Day</h5>
+      <h5 class="card-header lead">Highest Fund Sought of The Week</h5>
       <div class="card-body">
         <h5 class="card-title">{{ p.0 }}</h5>
         <p class="card-text">{{ p.1|truncatewords:30 }}</p>
@@ -59,23 +59,26 @@
   {% endfor %}
 </div>
 <hr>
-<h4 class="lead">Categories</h4>
+<div>
+  <h4 class="lead">Categories</h4>
 
-<form method="GET" action="{% url 'index' %}">
-  <div id="myDIV" class="btn-group mt-2 mb-3 btn-group-toggle" role="group" aria-label="Basic example"
-    data-toggle="buttons">
-    <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light" value="all">All</button>
-    <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
-      value="featured">Featured</button>
-    <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light" value="food and beverage">Food
-      and
-      Beverage</button>
-    <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
-      value="education">Education</button>
-    <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light" value="other">Others</button>
-  </div>
-</form>
-
+  <form method="GET" action="{% url 'index' %}">
+    <div id="myDIV" class="btn-group mt-2 mb-3 btn-group-toggle" role="group" aria-label="Basic example"
+      data-toggle="buttons">
+      <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light" value="all">All</button>
+      <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
+        value="featured">Featured</button>
+      <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
+        value="food and beverage">Food
+        and
+        Beverage</button>
+      <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
+        value="education">Education</button>
+      <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
+        value="other">Others</button>
+    </div>
+  </form>
+</div>
 {% for p in projects %}
 <div class="card mb-2">
   <div class="row no-gutters">
