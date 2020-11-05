@@ -4,10 +4,16 @@
 
       <div class="btn-group mt-5 mb-5" role="group" aria-label="Basic example">
         <form action = "{% url 'userPortal' %}">  
-          <button type="submit" class="btn btn-secondary">Users</button>
+          <button type="submit" class="btn btn-secondary btn-outline-light">Users</button>
         </form>
         <form action = "{% url 'projectPortal' %}">
-          <button type="submit" class="btn btn-secondary">Projects</button>
+          <button type="submit" class="btn btn-secondary btn-outline-light">Projects</button>
+        </form>
+        <form action = "{% url 'signup' %}">
+          <button type="submit" class="btn btn-secondary btn-outline-light">Create Users</button>
+        </form>
+        <form action = "{% url 'create' %}">
+          <button type="submit" class="btn btn-secondary btn-outline-light">Create Projects</button>
         </form>
       </div>
     {% endblock %}

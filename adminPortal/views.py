@@ -18,11 +18,11 @@ def adminPortal(request):
 
 
 def userPortal(request):
-    query = '''SELECT * FROM auth_user AS a WHERE NOT a.is_superuser AND NOT EXISTS (SELECT * FROM projects_project AS p WHERE p.id = a.id)'''
+    query = '''SELECT * FROM auth_user AS a WHERE NOT EXISTS (SELECT * FROM projects_project AS p WHERE p.id = a.id)'''
     c = connection.cursor()
     c.execute(query)
     users = c.fetchall()
-    query = '''SELECT * FROM auth_user AS a WHERE NOT a.is_superuser AND EXISTS (SELECT * FROM projects_project AS p WHERE p.id = a.id)'''
+    query = '''SELECT * FROM auth_user AS a WHERE EXISTS (SELECT * FROM projects_project AS p WHERE p.id = a.id)'''
     c = connection.cursor()
     c.execute(query)
     users_withProj = c.fetchall()
@@ -80,6 +80,33 @@ def userdetail(request):
         user_dict = {'useredit': user}
         return render(request, 'adminPortal/edituser.html', user_dict)
 
+def investment(request):
+    if request.method == "POST":
+        userid = request.POST.get('editid', None)
+        query = '''SELECT * FROM projects_invest WHERE "user" = \'%s\'''' % (userid)
+        c = connection.cursor()
+        c.execute(query)
+        investment = c.fetchall()
+        investment_dict = {'investment': investment}
+        return render(request, 'adminPortal/investment.html', investment_dict)
+
+def delinvest(request):
+    if request.method == "POST":
+        deleteid = request.POST.get('deleteid', None)
+        query = 'DELETE FROM projects_invest WHERE id = \'%s\'' % (
+            deleteid)
+        c = connection.cursor()
+        c.execute(query)
+        return redirect('userPortal')
+
+def editinvest(request):
+    if request.method == "POST":
+        editid = request.POST.get('editid', None)
+        amount = request.POST.get('amount', None)
+        query = 'UPDATE projects_invest SET amount = \'%s\' WHERE id = \'%s\'' % (amount, editid)
+        c = connection.cursor()
+        c.execute(query)
+        return redirect('userPortal')
 
 def edituser(request):
     if request.method == "POST":
@@ -91,6 +118,7 @@ def edituser(request):
         password2 = request.POST.get('password2', False)
         print(password1, password2)
         u = User.objects.get(pk=userid)
+        user = request.user
         if not (password1 or password2):
             query = '''UPDATE auth_user SET first_name = \'%s\',
                         last_name = \'%s\', email = \'%s\' WHERE id = \'%s\'''' % (firstname, lastname, email, userid)
@@ -106,7 +134,10 @@ def edituser(request):
                 c.execute(query)
             else:
                 return render(request, 'adminPortal/edituser.html', {'error': 'Password does not match'})
-        return redirect('userPortal')
+        if user.is_superuser:
+            return redirect('userPortal')
+        else:
+            return redirect('index')
 
 
 def editproject(request):
@@ -114,21 +145,34 @@ def editproject(request):
         editname = request.POST.get('editname', None)
         description = request.POST['description']
         cat = request.POST.get('category', None)
+        amount = request.POST.get('amount', None)
         if request.FILES:
             image = request.FILES['image']
             project = Project.objects.get(pk=editname)
             project.image = request.FILES['image']
             project.description = description
             project.save()
-            query = '''UPDATE projects_project SET image = \'images/%s\', category = \'%s\' WHERE name = \'%s\'''' % (
-                image, cat, editname)
+            query = '''UPDATE projects_project SET image = \'images/%s\', category = \'%s\', amount = \'%s\' WHERE name = \'%s\'''' % (
+                image, cat, amount, editname)
         else:
             project = Project.objects.get(pk=editname)
             project.description = description
             project.save()
-            query = '''UPDATE projects_project SET category = \'%s\' WHERE name = \'%s\'''' % (
-                cat, editname)
+            query = '''UPDATE projects_project SET category = \'%s\', amount = \'%s\' WHERE name = \'%s\'''' % (
+                cat, amount, editname)
 
         c = connection.cursor()
         c.execute(query)
         return redirect('projectPortal')
+
+
+def profile(request):
+    user = request.user.id
+    query = "SELECT * FROM auth_user WHERE id = \'%s\'" % (user)
+    c = connection.cursor()
+    c.execute(query)
+    user = c.fetchall()
+    user_dict = {'useredit': user}
+    return render(request, 'adminPortal/profile.html', user_dict)
+
+

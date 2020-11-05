@@ -1,7 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+{% if user.is_superuser %}
+<div class="btn-group mt-5 mb-5" role="group" aria-label="Basic example">
+    <form action="{% url 'userPortal' %}">
+        <button type="submit" class="btn btn-secondary btn-outline-light">Users</button>
+    </form>
+    <form action="{% url 'projectPortal' %}">
+        <button type="submit" class="btn btn-secondary btn-outline-light">Projects</button>
+    </form>
+    <form action="{% url 'signup' %}">
+        <button type="submit" class="btn btn-secondary btn-outline-light">Create Users</button>
+    </form>
+    <form action="{% url 'create' %}">
+        <button type="submit" class="btn btn-secondary btn-outline-light">Create Projects</button>
+    </form>
+</div>
+{% endif %}
 {% if error %}
 
 <div class="alert alert-danger mt-3" role="alert">
@@ -18,6 +33,17 @@
         <label for="title">Title:</label>
         <input type="text" name="title" class="form-control" id="title">
     </div>
+    {% if user.is_superuser %}
+    <div class="form-group col">
+        <label for="title">Username:</label>
+        <select class="custom-select my-1 mr-sm-2" name="userid" id="userid">
+            <option selected>Choose...</option>
+            {% for u in users %}
+            <option value="{{ u.0}}">{{ u.4}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
     <div class="form-group col">
         <label for="body">Description:</label>
         <textarea type="textarea" name="body" class="form-control" id="body"></textarea>
@@ -53,7 +79,7 @@
         </select>
 
         </br>
-        <button type="submit" class="btn btn-dark mt-2">Add Product</button>
+        <button type="submit" class="btn btn-dark mt-2">Add Project</button>
     </div>
 </form>
 

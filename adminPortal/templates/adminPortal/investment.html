@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <h1>User's investment</h1>
+    <table class="table table-borderless table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Investment id</th>
+                <th scope="col">Project Name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Time</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for u in investment %}
+            <tr>
+                <td>{{ u.0 }}</td>
+                <td>{{ u.2 }}</td> 
+                <td>{{ u.1 }}</td> 
+                <td>{{ u.4 }}</td> 
+                <td>
+                    <form id="delete" method="POST" action="{% url 'delinvest' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="deleteid" id="deleteid" value="{{ u.0 }}"></input>
+                        <input type=submit value="Delete" class="btn btn-secondary mb-2"></input>
+                    </form>
+                    <br>
+                    <form id="edit" method="POST" action="{% url 'editinvest' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="editid" id="editid" value="{{ u.0 }}"></input>
+                        <input type="number" class="form-control mb-2" aria-label="Amount (to the nearest dollar)" name="amount" placeholder="Insert the amount here" min="1">
+                        <input type=submit value="Edit" class="btn btn-secondary mb-2"></input>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

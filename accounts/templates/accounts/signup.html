@@ -5,43 +5,65 @@
 {% if error %}
 
 <div class="alert alert-danger mt-3" role="alert">
-    {{ error}}
+  {{ error}}
 </div>
 
 {% endif %}
-
+{% if user.is_superuser %}
+<div class="btn-group mt-5 mb-5" role="group" aria-label="Basic example">
+  <form action="{% url 'userPortal' %}">
+    <button type="submit" class="btn btn-secondary btn-outline-light">Users</button>
+  </form>
+  <form action="{% url 'projectPortal' %}">
+    <button type="submit" class="btn btn-secondary btn-outline-light">Projects</button>
+  </form>
+  <form action="{% url 'signup' %}">
+    <button type="submit" class="btn btn-secondary btn-outline-light">Create Users</button>
+  </form>
+  <form action="{% url 'create' %}">
+    <button type="submit" class="btn btn-secondary btn-outline-light">Create Projects</button>
+  </form>
+</div>
+<h1>Create new user</h1>
+{% else %}
 <h1>Sign up</h1>
-
+{% endif %}
 <form method="POST" action="{% url 'signup' %}">
-    {% csrf_token %}
-    <div class="form-group col">
-        <label for="exampleInputEmail1">First Name</label>
-        <input type="text" name="first_name" class="form-control">
-    </div>
-    <div class="form-group col">
-        <label for="exampleInputEmail1">Last Name</label>
-        <input type="text" name="last_name" class="form-control">
-    </div>
-    <div class="form-group col">
-        <label for="exampleInputEmail1">Username</label>
-        <input type="text" name="username" class="form-control" id="exampleInputUsername" aria-describedby="emailHelp">
-    </div>
-    <div class="form-group col">
-        <label for="exampleInputEmail1">Email Address</label>
-        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-    </div>
-    <div class="form-group col">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" name="password1" class="form-control" id="exampleInputPassword1">
-    </div>
-    <div class="form-group col">
-        <label for="exampleInputPassword1">Confirm Password</label>
-        <input type="password" name="password2" class="form-control" id="exampleInputPassword1">
-        </br>
-        <button type="submit" class="btn btn-dark">Sign up</button>
-    </div>
-
+  {% csrf_token %}
+  <div class="form-group col">
+    <label for="exampleInputEmail1">First Name</label>
+    <input type="text" name="first_name" class="form-control">
+  </div>
+  <div class="form-group col">
+    <label for="exampleInputEmail1">Last Name</label>
+    <input type="text" name="last_name" class="form-control">
+  </div>
+  <div class="form-group col">
+    <label for="exampleInputEmail1">Username</label>
+    <input type="text" name="username" class="form-control" id="exampleInputUsername" aria-describedby="emailHelp">
+  </div>
+  <div class="form-group col">
+    <label for="exampleInputEmail1">Email Address</label>
+    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+  <div class="form-group col">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" name="password1" class="form-control" id="exampleInputPassword1">
+  </div>
+  <div class="form-group col">
+    <label for="exampleInputPassword1">Confirm Password</label>
+    <input type="password" name="password2" class="form-control" id="exampleInputPassword1">
+    </br>
+    {% if user.is_superuser %}
+    <button type="submit" class="btn btn-dark">Create</button>
+    {% else %}
+    <button type="submit" class="btn btn-dark">Sign up</button>
+    {% endif %}
+  </div>
+  {% if not user.is_superuser %}
+  <a href="{% url 'login' %}">Already have an account? Click here!</a>
+  {% endif %}
 </form>
 
 

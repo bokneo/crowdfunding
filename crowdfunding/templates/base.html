@@ -81,7 +81,7 @@
 
     .card-img {
 
-      max-width: 300px ;
+      max-width: 300px;
       max-height: 275px;
 
     }
@@ -113,12 +113,16 @@
           <div class="nav-item active">
             {% if user.is_superuser %}
             <a class="nav-link nav-item" href="{% url 'adminPortal' %}">Admin</a>
+            {% elif user.is_authenticated %}
+            <a class="nav-link nav-item" href="{% url 'profile' %}">Profile</a>
             {% endif %}
           </div>
           <div class="nav-item active">
             {% if user.is_authenticated %}
+            {% if not user.is_superuser %}
             <a class="nav-link nav-item" href="{% url 'create' %}">Create</a>
           </div>
+            {% endif %}
           <div class="nav-item active">
             <a class="nav-link nav-item" href="javascript:{document.getElementById('logout').submit()}">Logout</a>
             <form id="logout" method="POST" action="{% url 'logout' %}">

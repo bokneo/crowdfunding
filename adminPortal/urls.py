@@ -27,6 +27,10 @@ urlpatterns = [
     path('deleteproject',views.delproject, name = "delproject"),
     path('<str:name>/project', views.editdetail, name = "editdetail"),
     path('userdetail', views.userdetail, name = "userdetail"),
+    path('investment', views.investment, name = "investment"),
+    path('deleteinvest',views.delinvest, name = "delinvest"),
+    path('editinvest',views.editinvest, name = "editinvest"),
     path('editproject',views.editproject, name = "editproject"),
     path('edituser',views.edituser, name = "edituser"),
+    path('profile',views.profile, name = "profile"),
 ]

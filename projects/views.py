@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.http import JsonResponse
 from .models import Project, Invest
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
@@ -154,6 +155,11 @@ def autocomplete(request):
 
 @login_required(login_url="accounts/signup")
 def create(request):
+    query = "SELECT * FROM auth_user"
+    c = connection.cursor()
+    c.execute(query)
+    users = c.fetchall()
+    users_dict = {'users': users}
     if request.method == 'POST':
         if request.POST['title'] and request.POST['body'] and request.FILES.get('image', False) and request.POST['start'] and request.POST['end'] and request.POST['amount'] and request.POST['category']:
             project = Project()
@@ -164,14 +170,21 @@ def create(request):
             project.end = request.POST['end']
             project.amount = request.POST['amount']
             project.category = request.POST['category']
-            project.username = request.user
+            user = request.user
+            if user.is_superuser:
+                username = request.POST['userid']
+                user = User.objects.get(id=username)
+                print(user)
+                project.username = user
+            else:
+                project.username = request.user
             project.save()
             return redirect('index')
 
         else:
             return render(request, 'projects/create.html', {'error': "All fields are required"})
     else:
-        return render(request, 'projects/create.html')
+        return render(request, 'projects/create.html', users_dict)
 
 
 def detail(request, projectName):
