@@ -30,11 +30,12 @@
 </div>
 <br>
 <hr>
+<h4 class="lead">Leaderboard</h4>
 <div class="row">
   <div class="col-sm-6">
     {% for p in feature %}
     <div class="card">
-      <h5 class="card-header lead">Highest Fund Sought of The Week</h5>
+      <h5 class="card-header lead">Highest Amount of Investment Sought of The Day</h5>
       <div class="card-body">
         <h5 class="card-title">{{ p.0 }}</h5>
         <p class="card-text">{{ p.1|truncatewords:30 }}</p>
@@ -58,6 +59,34 @@
   </div>
   {% endfor %}
 </div>
+<div class="row">
+<div class="col-sm-6">
+  {% for p in Highest %}
+  <div class="card">
+    <h5 class="card-header lead">Highest Frequency Investment of The Day</h5>
+    <div class="card-body">
+      <h5 class="card-title">{{ p.0 }}</h5>
+      <p class="card-text">{{ p.1|truncatewords:30 }}</p>
+      <a onclick="window.location='{% url 'detail' p.0 %}';" style="cursor: pointer;"
+        class="btn btn-secondary btn-outline-light">Click here to find out more</a>
+    </div>
+  </div>
+</div>
+{% endfor %}
+<div class="col-sm-6">
+  {% for p in Mostfund %}
+  <div class="card">
+    <h5 class="card-header lead">Project Sought the Most Fund of All-Time</h5>
+    <div class="card-body">
+      <h5 class="card-title">{{ p.0 }}</h5>
+      <p class="card-text">{{ p.1|truncatewords:30 }}</p>
+      <a onclick="window.location='{% url 'detail' p.0 %}';" style="cursor: pointer;"
+        class="btn btn-secondary btn-outline-light">Click here to find out more</a>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
 <hr>
 <div>
   <h4 class="lead">Categories</h4>
@@ -67,7 +96,7 @@
       data-toggle="buttons">
       <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light" value="all">All</button>
       <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
-        value="featured">Featured</button>
+        value="featured">Sucessful Projects</button>
       <button type="submit" name="cat" id="cat" class="btn btn-secondary btn-outline-light"
         value="food and beverage">Food
         and

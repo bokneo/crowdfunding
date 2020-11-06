@@ -35,26 +35,23 @@ def index(request):
         c = connection.cursor()
         c.execute(query)
         project = c.fetchall()
-        #project_dict = {'projects': project}
     elif cat == "featured":
         query = "SELECT * FROM projects_project WHERE pledged >= amount ORDER BY created_at DESC"
         c = connection.cursor()
         c.execute(query)
         project = c.fetchall()
-        #project_dict = {'projects': project}
     else:
         query = "SELECT * FROM projects_project WHERE category = \'%s\' ORDER BY created_at DESC" % (
             cat)
         c = connection.cursor()
         c.execute(query)
         project = c.fetchall()
-        #project_dict = {'projects': project}
     query = """SELECT *
 		        FROM projects_project AS pp
 		        WHERE pp.name = (
 		            SELECT pi.name
 		            FROM projects_invest AS pi
-		            WHERE EXTRACT(DAY FROM pi.ts) BETWEEN EXTRACT(DAY FROM CURRENT_TIMESTAMP) - 6 AND EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+		            WHERE EXTRACT(DAY FROM pi.ts) BETWEEN EXTRACT(DAY FROM CURRENT_TIMESTAMP) AND EXTRACT(DAY FROM CURRENT_TIMESTAMP)
 		            AND EXTRACT(MONTH FROM pi.ts)=EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
 			        AND EXTRACT(YEAR FROM pi.ts)=EXTRACT(YEAR FROM CURRENT_TIMESTAMP)
 		            GROUP BY pi.name, pi.amount
@@ -83,6 +80,34 @@ def index(request):
     c = connection.cursor()
     c.execute(query)
     newest = c.fetchall()
+    query = """SELECT *
+                FROM projects_project AS pp
+                WHERE pp.name = (
+                    SELECT pi1.name
+                    FROM projects_invest AS pi1
+                    WHERE EXTRACT(DAY FROM pi1.ts) BETWEEN EXTRACT(DAY FROM CURRENT_TIMESTAMP) - 6 AND EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+                    GROUP BY pi1.name
+                    HAVING COUNT(pi1.name) >= ALL(
+                        SELECT COUNT(pi2.name)
+                        FROM projects_invest AS pi2
+                        WHERE EXTRACT(DAY FROM pi2.ts) BETWEEN EXTRACT(DAY FROM CURRENT_TIMESTAMP) - 6 AND EXTRACT(DAY FROM CURRENT_TIMESTAMP)
+                        GROUP BY pi2.name
+                        )
+                LIMIT 1
+                )"""
+    c = connection.cursor()
+    c.execute(query)
+    Highest = c.fetchall()
+    query = """SELECT *
+                FROM projects_project AS pp
+                WHERE NOT EXISTS(
+                        SELECT *
+                        FROM projects_project AS pp1
+                        WHERE pp.pledged < pp1.pledged
+                        )"""
+    c = connection.cursor()
+    c.execute(query)
+    Mostfund = c.fetchall()
     page = request.GET.get('page', 1)
     paginator = Paginator(project, 2)
     try:
@@ -91,7 +116,7 @@ def index(request):
         project = paginator.page(1)
     except EmptyPage:
         project = paginator.page(paginator.num_pages)
-    return render(request, 'projects/index.html', {'projects': project, 'cat': cat, 'feature': feature, 'newest': newest})
+    return render(request, 'projects/index.html', {'projects': project, 'cat': cat, 'feature': feature, 'newest': newest, 'Highest': Highest, 'Mostfund': Mostfund})
 
 
 '''def feature(request):
@@ -145,7 +170,7 @@ def autocomplete(request):
         result_dict = {'records': results}
         titles = []
         for projects in result_dict['records']:
-            titles.append(projects[0])          
+            titles.append(projects[0])
         data = JsonResponse(titles, safe=False)
         return data
     else:
@@ -161,28 +186,36 @@ def create(request):
     users = c.fetchall()
     users_dict = {'users': users}
     if request.method == 'POST':
-        if request.POST['title'] and request.POST['body'] and request.FILES.get('image', False) and request.POST['start'] and request.POST['end'] and request.POST['amount'] and request.POST['category']:
-            project = Project()
-            project.name = request.POST['title']
-            project.description = request.POST['body']
-            project.image = request.FILES['image']
-            project.start = request.POST['start']
-            project.end = request.POST['end']
-            project.amount = request.POST['amount']
-            project.category = request.POST['category']
-            user = request.user
-            if user.is_superuser:
-                username = request.POST['userid']
-                user = User.objects.get(id=username)
-                print(user)
-                project.username = user
-            else:
-                project.username = request.user
-            project.save()
-            return redirect('index')
-
+        name = request.POST['title']
+        query = 'SELECT * FROM projects_project WHERE name = \'%s\'' % (name)
+        c = connection.cursor()
+        c.execute(query)
+        results = c.fetchall()
+        if len(results) > 0:
+            return render(request, 'projects/create.html', {'error': 'Project name has already been taken'})
         else:
-            return render(request, 'projects/create.html', {'error': "All fields are required"})
+            if request.POST['title'] and request.POST['body'] and request.FILES.get('image', False) and request.POST['start'] and request.POST['end'] and request.POST['amount'] and request.POST['category']:
+                project = Project()
+                project.name = request.POST['title']
+                project.description = request.POST['body']
+                project.image = request.FILES['image']
+                project.start = request.POST['start']
+                project.end = request.POST['end']
+                project.amount = request.POST['amount']
+                project.category = request.POST['category']
+                user = request.user
+                if user.is_superuser:
+                    username = request.POST['userid']
+                    user = User.objects.get(id=username)
+                    print(user)
+                    project.username = user
+                else:
+                    project.username = request.user
+                project.save()
+                return redirect('index')
+
+            else:
+                return render(request, 'projects/create.html', {'error': "All fields are required"})
     else:
         return render(request, 'projects/create.html', users_dict)
 

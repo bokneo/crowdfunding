@@ -30,6 +30,7 @@
                     <form id="edit" method="POST" action="{% url 'editinvest' %}">
                         {% csrf_token %}
                         <input type="hidden" name="editid" id="editid" value="{{ u.0 }}"></input>
+                        <input type="hidden" name="editname" id="editname" value="{{ u.2 }}"></input>
                         <input type="number" class="form-control mb-2" aria-label="Amount (to the nearest dollar)" name="amount" placeholder="Insert the amount here" min="1">
                         <input type=submit value="Edit" class="btn btn-secondary mb-2"></input>
                     </form>

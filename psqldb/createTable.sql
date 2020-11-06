@@ -13,8 +13,9 @@ CREATE TABLE auth_user (
 );
 
 CREATE TABLE project(
+    id VARCHAR(128) NOT NULL,
     username VARCHAR(128) NOT NULL,
-    name VARCHAR(255) PRIMARY KEY NOT NULL,
+    name VARCHAR(255) NOT NULL,
     description TEXT,
     start DATE NOT NULL,
     end DATE NOT NULL,
@@ -23,10 +24,12 @@ CREATE TABLE project(
     amount NUMERIC(12,2) NOT NULL DEFAULT 0,
     created_at TIMESTAMP,
     category VARCHAR(255) NOT NULL DEFAULT 'other',
-    FOREIGN KEY(id) REFERENCES auth_user(id)
+    PRIMARY KEY (id, username, name)
+    FOREIGN KEY(id, username) REFERENCES auth_user(id, username)
 );
 
 CREATE TABLE invest(
+    id SERIAL PRIMARY KEY,
     project_name VARCHAR(255),
     user VARCHAR(128) REFERENCES users(id),
     amount NUMERIC(12,2) DEFAULT 0,

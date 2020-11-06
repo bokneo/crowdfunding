@@ -103,7 +103,13 @@ def editinvest(request):
     if request.method == "POST":
         editid = request.POST.get('editid', None)
         amount = request.POST.get('amount', None)
+        editname = request.POST.get('editname', None)
+        print(editname)
         query = 'UPDATE projects_invest SET amount = \'%s\' WHERE id = \'%s\'' % (amount, editid)
+        c = connection.cursor()
+        c.execute(query)
+        query = "UPDATE projects_project SET pledged = (SELECT SUM(amount) FROM projects_invest WHERE name = \'%s\') WHERE name = \'%s\'" % (
+                editname, editname)
         c = connection.cursor()
         c.execute(query)
         return redirect('userPortal')
