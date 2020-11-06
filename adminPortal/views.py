@@ -151,7 +151,11 @@ def editproject(request):
         editname = request.POST.get('editname', None)
         description = request.POST['description']
         cat = request.POST.get('category', None)
-        amount = request.POST.get('amount', None)
+        amount = request.POST.get('amount', False)
+        if amount:
+            amountupdate = amount
+        else:
+            amountupdate = request.POST.get('oldamount', False)
         if request.FILES:
             image = request.FILES['image']
             project = Project.objects.get(pk=editname)
@@ -159,13 +163,13 @@ def editproject(request):
             project.description = description
             project.save()
             query = '''UPDATE projects_project SET image = \'images/%s\', category = \'%s\', amount = \'%s\' WHERE name = \'%s\'''' % (
-                image, cat, amount, editname)
+                image, cat, amountupdate, editname)
         else:
             project = Project.objects.get(pk=editname)
             project.description = description
             project.save()
             query = '''UPDATE projects_project SET category = \'%s\', amount = \'%s\' WHERE name = \'%s\'''' % (
-                cat, amount, editname)
+                cat, amountupdate, editname)
 
         c = connection.cursor()
         c.execute(query)
